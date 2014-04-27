@@ -1,0 +1,34 @@
+<% 
+   klass = TranslationDbEngine.translation_key_class
+   @locales = klass.available_locales 
+   path_postfix = build_named_route_call(klass, :singular, {:routing_type=>:path})
+   url_postfix = build_named_route_call(klass, :singular, {:routing_type=>:url})
+%>
+<%= link_to _("New"), send("new_"+url_postfix) %>
+
+<table>
+  <thead>
+    <tr>
+      <th><%= _("Key") %></th>
+      <% @locales.each do |locale| %>
+        <th><%= locale %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @translation_keys.each do |key| %>
+      <tr class="<%= cycle "even","odd"%>">
+        <td><%= key.key %></td>
+        <% @locales.each do |locale| %>
+          <% translation = key.translations.detect{|t| t.locale == locale } %>
+          <td><%= translation.text if translation %></td>
+        <% end %>
+        <td>
+          <% confirm_delete = _("Delete key #{key.key} ?") %>
+          <%= link_to content_tag(:b, 'X', :style => 'color:red'), key, :confirm => confirm_delete, :method=>:delete %>
+          <%= link_to _("Edit"), key %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
