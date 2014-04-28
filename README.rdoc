@@ -1,20 +1,19 @@
 = TranslationDbEngine (revisited)
-
-This work is based on TranslationDbEngine from Michael Grosser at 
-git://github.com/grosser/translation_db_engine.git.
+ This work is based on TranslationDbEngine from Michael Grosser at 
+ git://github.com/grosser/translation_db_engine.git.
 
 
 == Whats new?
-* Rails 3/4 support
-* Its a Rails Engine
-* Custom translation class
-
+ * Rails 3/4 support
+ * Its a Rails Engine
+ * Custom translation class
 
 == Author
-Joni Töyrylä
-http://jonitoyryla.eu
-info@jonitoyryla.eu
+ Joni Töyrylä
 
+ http://jonitoyryla.eu
+
+ info@jonitoyryla.eu
 
 This project rocks and uses MIT-LICENSE.
 
