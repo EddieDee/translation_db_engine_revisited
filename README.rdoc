@@ -4,17 +4,16 @@ This work is based on TranslationDbEngine from Michael Grosser at
 git://github.com/grosser/translation_db_engine.git.
 
 
-Whats new?
-======
-- Rails 3/4 support
-- Its a Rails Engine
-- Custom translation class
+== Whats new?
+* Rails 3/4 support
+* Its a Rails Engine
+* Custom translation class
 
 
-Author
-======
-[Joni Töyrylä](http://jonitoyryla.eu)<br/>
-info@jonitoyryla.eu<br/>
+== Author
+Joni Töyrylä
+http://jonitoyryla.eu
+info@jonitoyryla.eu
 
 
 This project rocks and uses MIT-LICENSE.
