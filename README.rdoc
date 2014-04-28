@@ -10,9 +10,7 @@
 
 == Author
  Joni Töyrylä
-
  http://jonitoyryla.eu
-
  info@jonitoyryla.eu
 
 This project rocks and uses MIT-LICENSE.
