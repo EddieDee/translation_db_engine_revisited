@@ -1,19 +1,38 @@
-<h1><%= @translation_key.key.present? || _("New translation") %></h1>
-<%= form_for @translation_key do |f| %>
-  <%# f.error_messages %>
-  <p>
-    <%= f.label :key %>
-    <%= f.text_area :key, :size=>'80x4' %>
-  </p>
+<div id="content">
+  <div class="index">
+  <div class="container">
 
-  <% f.fields_for :translations do |tf| %>
-    <p>
-      <%= tf.label :text, tf.object.locale %>
-      <%= tf.text_area :text, :size=>'80x2' %>
-    </p>
-    <%= tf.hidden_field :locale if tf.object.new_record? %>
-  <% end %>
+  <table class="table">
+    <h1><%= @translation_key.key || _("New translation") %></h1>
+    <%= form_for @translation_key do |f| %>
+      <tr>
+        <td>
+          <%= f.label :key %>
+        </td>
+        <td>
+          <%= f.text_area :key, :size=>'80x4' %>
+      </tr>
+      <%= f.fields_for :translations do |tf| %>
+      <tr>
+        <td>    
+          <%= tf.label :text, tf.object.locale %>
+        </td>
+        <td>
+          <%= tf.text_area :text, :size=>'80x2' %>
+        </td>
+      </tr>
+      <%= tf.hidden_field :locale if tf.object.new_record? %>     
+      <% end %>   
+      <tr>
+        <td colspan="10">
+          <% topic = @translation_key.new_record? ? _("Create") : _("Save") %>
+          <%= f.submit(topic) %>
+          <%= link_to _('Back to overview'), translation_keys_path %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
 
-  <%= f.submit(@translation_key.new_record? ? "Create" : "Save") %>
-  <%= link_to 'Back to overview', translation_keys_path %>
-<% end %>
+  </div>
+  </div>
+</div>

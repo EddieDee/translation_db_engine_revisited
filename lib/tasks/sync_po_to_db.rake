@@ -1,9 +1,9 @@
 desc "synchronise po files with db, creating keys and translations that do not exist"
 task :sync_po_to_db => :environment do
-  folder = ENV['FOLDER']||'locale'
+  folder = ENV['FOLDER'] || 'locale'
 
-  gem 'grosser-pomo', '>=0.5.1'
-  require 'pomo'
+  #gem 'grosser-pomo', '>=0.5.1'
+  #require 'pomo'
   require 'pathname'
   
   #find all files we want to read
@@ -19,13 +19,13 @@ task :sync_po_to_db => :environment do
     locale = p.dirname.basename.to_s
     next unless locale =~ /^[a-z]{2}([-_][a-z]{2})?$/i
     puts "Reading #{p.to_s}"
-    translations = Pomo::PoFile.parse(p.read)
+    translations = GetPomo::PoFile.parse(p.read)
 
     #add all non-fuzzy translations to the database
     translations.reject(&:fuzzy?).each do |t|
       next if t.msgid.blank? #atm do not insert metadata
 
-      key = TranslationKey.find_or_create_by_key(t.msgid)
+      key = TranslationDbEngine.translation_key_class.find_or_create_by_key(t.msgid)
       #do not overwrite existing translations
       next if key.translations.detect{|text| text.locale == locale}
 

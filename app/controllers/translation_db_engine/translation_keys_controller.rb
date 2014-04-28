@@ -1,13 +1,22 @@
 module TranslationDbEngine
   class TranslationKeysController < ApplicationController
     before_filter :authenticate
-    before_filter :find_translation_key, :only=>%w[show edit update destroy]
+    before_filter :find_translation_key, :only=>%w[show edit update destroy]    
+    before_filter :set_locales
+
+    layout "layouts/application"
+
+    def set_locales
+      @locales = TranslationDbEngine.translation_key_class.available_locales 
+    end
 
     def index
+      set_height
       @translation_keys = TranslationDbEngine.translation_key_class.find(:all)
     end
 
     def new
+      set_height
       @translation_key = TranslationDbEngine.translation_key_class.new
       add_default_locales_to_translation
       render :action=>:edit
@@ -25,11 +34,13 @@ module TranslationDbEngine
     end
 
     def show
+      set_height
       add_default_locales_to_translation
       render :action=>:edit
     end
 
     def edit
+      set_height
     end
 
     def update
