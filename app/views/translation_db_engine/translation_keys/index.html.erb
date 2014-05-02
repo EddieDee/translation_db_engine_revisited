@@ -10,6 +10,7 @@
       <tr>
         <th><%= _("Key") %></th>
         <% @locales.each do |locale| %>
+          <% next unless current_user_account.accessible_locales_as_array.include? locale.to_s %>
           <th><%= locale %></th>
         <% end %>
       </tr>
@@ -20,16 +21,15 @@
           <td><%= key.key %></td>
           <% @locales.each do |locale| %>
             <% 
+               next unless current_user_account.accessible_locales_as_array.include? locale.to_s
                translation = key.translations.detect {|t| t.locale == locale.to_s} 
             %>
             <td><%= translation.text if translation %></td>
           <% end %>
-          <td>
-            <% 
-               confirm_delete = _("Delete key #{key.key} ?") 
-               options = { confirm: confirm_delete, method: :delete }
-               %>
-            <%= link_to content_tag(:b, 'X', :style => 'color:red'), key, options %>
+          <td>           
+            <% if can? :destroy, key %>
+              <%= remove_translation_key_link key %>
+            <% end %>
             <%= link_to _("Edit"), key %>
           </td>
         </tr>

@@ -3,9 +3,7 @@ module TranslationDbEngine
     before_filter :authenticate
     before_filter :find_translation_key, :only=>%w[show edit update destroy]    
     before_filter :set_locales
-
-    layout "layouts/application"
-
+    
     def set_locales
       @locales = TranslationDbEngine.translation_key_class.available_locales 
     end
@@ -23,6 +21,8 @@ module TranslationDbEngine
     end
 
     def create
+      return unless can? :create, @translation_key
+
       @translation_key = TranslationDbEngine.translation_key_class.new(params[:translation_key])
       if @translation_key.save
         flash[:notice] = _('Created!')
@@ -44,7 +44,12 @@ module TranslationDbEngine
     end
 
     def update
-      if @translation_key.update_attributes(record_attributes)
+      unless can? :update, TranslationDbEngine.translation_text_class
+        flash[:error] = _('No permission')
+        render :action=>:edit
+      end
+
+      if @translation_key.update_attributes(accessible_attributes)
         flash[:notice] = _('Saved!')
         redirect_to @translation_key
       else
@@ -54,11 +59,39 @@ module TranslationDbEngine
     end
 
     def destroy
+      unless can? :destroy, @translation_key
+        flash[:error] = _('No permission')
+        redirect_to translation_keys_path
+      end
       @translation_key.destroy
       redirect_to translation_keys_path
     end
 
     private 
+
+    # Authorization is done by current_user_account#accessible_locales_as_array
+    #
+    # >> current_user_account.accessible_locales_as_array
+    # => ["en", "fr"]
+    def accessible_attributes
+      accessible = current_user_account.accessible_locales_as_array
+      ids = record_attributes['translations_attributes'].values.map { |i| i["id"].to_i }
+      locales_from_db = TranslationDbEngine.translation_text_class.select(:id, :locale).where(id: ids)
+      locale_array_from_db = locales_from_db.map { |l| 
+        [l.id, l.locale] 
+      }
+      to_be_removed = locale_array_from_db.select do |item|
+        !accessible.include? item[1]
+      end.map {|i| i[0].to_i }
+      result = {}
+      record_attributes['translations_attributes'].each {|k,v| 
+        next if to_be_removed.include? v["id"].to_i
+        result[k] = v
+      }
+      accessible = record_attributes.dup # Lets not override 
+      accessible['translations_attributes'] = result
+      accessible
+    end
 
     def record_attributes
       params[record_key]
